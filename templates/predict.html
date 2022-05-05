@@ -7,12 +7,6 @@
     <!-- Pour appeler des API en javascipt -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     
-    <!-- Librairies pour l'affichage de graphes -->
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/wordcloud.js"></script> 
-
     <!-- Code d'appel de notre API -->
     <script src="/static/california_prediction.js"></script>
 
@@ -45,65 +39,77 @@
         <div class="chartContainer">
             <table>
               <tr>
-                <form action="/predict" method="post">
-                <td>
-                  <div id="prediction" class="form">
-                      <table>
-                        <tr>
-                          <td>Revenu médian dans le secteur :</td>
-                          <td></td>
-                          <td><input id="revenu_median" value="9.87" > K$ (en 10K $ dollars)&nbsp;</input></td>
-                        </tr>
-                        <tr>
-                          <td>Age médian des logements dans le secteur :</td>
-                          <td></td>
-                          <td><input id="age_median" value='150' > ans&nbsp;</input></td>
-                        </tr>
-                        <tr>
-                          <td>Nombre moyen de pièces :</td>
-                          <td></td>
-                          <td><input id="nb_room_mean" value='7' > pièces &nbsp;</input></td>
-                        </tr>
-                        <tr>
-                          <td>Nombre moyen de chambres :</td>
-                          <td></td>
-                          <td><input id="nb_bedroom_mean" value='3' > chambres &nbsp;</input></td>
-                        </tr>
-                        <tr>
-                          <td>Population dans le secteur :</td>
-                          <td></td>
-                          <td><input id="population" value='1425' > habitants &nbsp;</input></td>
-                        </tr>
-                        <tr>
-                          <td>Occupation moyenne des logements :</td>
-                          <td></td>
-                          <td><input id="occupation_mean" value='3' > habitants / logement &nbsp;</input></td>
-                        </tr>
-                        <tr>
-                          <td>Latitude :</td>
-                          <td></td>
-                          <td><input id="latitude" value='35' > ° &nbsp;</input></td>
-                        </tr>
-                        <tr>
-                          <td>Longitude :</td>
-                          <td></td>
-                          <td><input id="longitude" value='-119' > ° &nbsp;</input></td>
-                        </tr>
-                        <!-- <tr>
-                          <td colspan="3">
-                            <button type="submit">Prédire le prix moyen</button>
-                          </td>
-                        </tr> -->
-                      </table>
-                    </div>
+                <form action="/predict" method="POST">
+                  <td>
+                    <div id="prediction" class="form">
+                        <table>
+                          <tr>
+                            <td>Revenu médian dans le secteur :</td>
+                            <td></td>
+                            <td><input id="revenu_median" name="revenu_median" value="9.87" > K$ (en 10K $ dollars)&nbsp;</input></td>
+                          </tr>
+                          <tr>
+                            <td>Age médian des logements dans le secteur :</td>
+                            <td></td>
+                            <td><input id="age_median" name="age_median" value='150' > ans&nbsp;</input></td>
+                          </tr>
+                          <tr>
+                            <td>Nombre moyen de pièces :</td>
+                            <td></td>
+                            <td><input id="nb_room_mean" name="nb_room_mean" value='7' > pièces &nbsp;</input></td>
+                          </tr>
+                          <tr>
+                            <td>Nombre moyen de chambres :</td>
+                            <td></td>
+                            <td><input id="nb_bedroom_mean" name="nb_bedroom_mean" value='3' > chambres &nbsp;</input></td>
+                          </tr>
+                          <tr>
+                            <td>Population dans le secteur :</td>
+                            <td></td>
+                            <td><input id="population" name="population" value='1425' > habitants &nbsp;</input></td>
+                          </tr>
+                          <tr>
+                            <td>Occupation moyenne des logements :</td>
+                            <td></td>
+                            <td><input id="occupation_mean" name="occupation_mean" value='3' > habitants / logement &nbsp;</input></td>
+                          </tr>
+                          <tr>
+                            <td>Latitude :</td>
+                            <td></td>
+                            <td><input id="latitude" name="latitude" value='35' > ° &nbsp;</input></td>
+                          </tr>
+                          <tr>
+                            <td>Longitude :</td>
+                            <td></td>
+                            <td><input id="longitude" name="longitude" value='-119' > ° &nbsp;</input></td>
+                          </tr>
+                          <!-- <tr>
+                            <td colspan="3">
+                              <button type="submit">Prédire le prix moyen</button>
+                            </td>
+                          </tr> -->
+                        </table>
+                      </div>
                   </td>
                   <td>
-                    <button type="submit" class="button"><b>Prédire le prix moyen &rarr;</b></button>
+                      <button type="submit" class="button"><b>Prédire le prix moyen &rarr;</b></button>
                   </td>
                 </form>
                 <td>
                   <div id="resultat_prediction" class="prediction_resultat">
-        
+                    <p>
+                      <!-- Afficher le résultat de la prédiction -->
+                      <script>
+                        var parameters = location.search.substring(1).split("&");
+                        if (parameters.length>0){
+                          var temp = parameters[0].split("=");
+                          prediction = unescape(temp[1]);
+                          document.write(display_predic())
+                        }else {
+                          document.write("Cliquez sur le bouton pour estimer le prix du logement.")
+                        }
+                      </script>
+                    </p>
                   </div>
                 </td>
               </tr>
