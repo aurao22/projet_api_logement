@@ -26,6 +26,7 @@ def hello():
 
     print(revenu_median, age_median, nb_room_mean, nb_bedroom_mean, population, occupation_mean, latitude, longitude)
 
+    # Attention, c'est n numpy.ndarray qui est retourné
     predict_price = do_prediction(revenu_median, age_median, nb_room_mean, nb_bedroom_mean, population, occupation_mean, latitude, longitude)
     print(predict_price)
 
@@ -64,7 +65,6 @@ def do_prediction(revenu_median, age_median, nb_room_mean, nb_bedroom_mean, popu
     # Chargement du model
     model = load_model(model_path)
     predict_price = model.predict(df_to_predict)
-    # Attention, c'est n numpy.ndarray qui est retourné
     print(f"Prédiction : {predict_price}")
     return predict_price[0]
 

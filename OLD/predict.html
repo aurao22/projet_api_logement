@@ -24,9 +24,7 @@
             <table>
               <tr>
                 <td>
-                  <a href="/">
-                    <img src="/static/illustration-california-color2.png" width="80%" height="80%">
-                  </a>
+                  <img src="/static/illustration-california-color2.png" width="80%" height="80%">
                 </td>
                 <td>
                   Prédiction du prix des logements en Californie
@@ -41,8 +39,7 @@
         <div class="chartContainer">
             <table>
               <tr>
-                <form method="POST" action="{{ url_for('hello') }}">
-                <!-- <form action="/predict" method="POST"> -->
+                <form action="/predict" method="GET">
                   <td>
                     <div id="prediction" class="form">
                         <table>

@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
+import json
+from flask import Flask, render_template, jsonify, request, make_response
 from api_logement_function import load_model
 from os import getcwd
-from flask import Flask, render_template, request
+
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
-def form():
+@app.route("/", methods=['GET','POST'])
+def hello():
     return render_template('home.html')
 
-@app.route('/hello', methods=['GET', 'POST'])
-def hello():
-
+@app.route('/predict/', methods=['GET','POST'])
+def do_prediction_via_record():
+    
     record = request.form
     print(record)
 
@@ -26,10 +28,18 @@ def hello():
 
     print(revenu_median, age_median, nb_room_mean, nb_bedroom_mean, population, occupation_mean, latitude, longitude)
 
+    # Attention, c'est n numpy.ndarray qui est retourné
     predict_price = do_prediction(revenu_median, age_median, nb_room_mean, nb_bedroom_mean, population, occupation_mean, latitude, longitude)
-    print(predict_price)
+    msg=f"{predict_price[0]} 10 K$."
+    dic ={'message':msg , 'data':predict_price[0], 'status':200}
+    res = json.dumps(dic)
+    print(res)
+    # return res
 
-    return render_template('greeting.html', say=round(predict_price,2), to=predict_price,revenu_median=revenu_median, 
+    # response = make_response(render_template('predict.html', prediction=predict_price))
+    # response.headers['prediction'] = predict_price
+    # return response
+    return render_template('predict_result.html', prediction=predict_price[0],revenu_median=revenu_median, 
                         age_median=age_median, nb_room_mean=nb_room_mean, 
                         nb_bedroom_mean=nb_bedroom_mean, population=population, 
                         occupation_mean=occupation_mean, 
@@ -64,10 +74,9 @@ def do_prediction(revenu_median, age_median, nb_room_mean, nb_bedroom_mean, popu
     # Chargement du model
     model = load_model(model_path)
     predict_price = model.predict(df_to_predict)
-    # Attention, c'est n numpy.ndarray qui est retourné
     print(f"Prédiction : {predict_price}")
-    return predict_price[0]
+    return predict_price
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

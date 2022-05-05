@@ -24,7 +24,9 @@
             <table>
               <tr>
                 <td>
-                  <img src="/static/illustration-california-color2.png" width="80%" height="80%">
+                  <a href="/predict">
+                    <img src="/static/illustration-california-color2.png" width="80%" height="80%">
+                  </a>
                 </td>
                 <td>
                   Prédiction du prix des logements en Californie
@@ -39,7 +41,8 @@
         <div class="chartContainer">
             <table>
               <tr>
-                <form action="/predict" method="POST">
+                <form method="POST" action="{{ url_for('do_prediction') }}">
+                <!-- <form action="/predict" method="POST"> -->
                   <td>
                     <div id="prediction" class="form">
                         <table>
@@ -100,13 +103,27 @@
                     <p>
                       <!-- Afficher le résultat de la prédiction -->
                       <script>
+
                         var parameters = location.search.substring(1).split("&");
-                        if (parameters.length>0){
+                        console.log("parameters:" + parameters)
+                        if (parameters == null || parameters.length==0){
+                          document.write("Cliquez sur le bouton pour estimer le prix du logement.");
+                        }else{
+                          
                           var temp = parameters[0].split("=");
-                          prediction = unescape(temp[1]);
-                          document.write(display_predic())
-                        }else {
-                          document.write("Cliquez sur le bouton pour estimer le prix du logement.")
+                          console.log("temp:"+temp)
+                          if(temp == null){
+                            document.write("Cliquez sur le bouton pour estimer le prix du logement..");
+
+                          }else{
+                            prediction = unescape(temp[1]);
+                            console.log("prediction:"+prediction)
+                            if(prediction == null || prediction == 'undefined'){
+                              document.write("Cliquez sur le bouton pour estimer le prix du logement...");
+                            }else {
+                              document.write(prediction);
+                            }
+                          }
                         }
                       </script>
                     </p>
