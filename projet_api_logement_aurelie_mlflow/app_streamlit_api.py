@@ -4,6 +4,9 @@ from PIL import Image
 import sys
 sys.path.append("C:\\Users\\User\\WORK\\workspace-ia\\PROJETS\\")
 from projet_api_logement.api_logement_commons import do_prediction, get_img_path
+import mlflow
+    # Predict on a Pandas DataFrame.
+import pandas as pd
 
 st.set_page_config(
      layout="wide",
@@ -50,16 +53,27 @@ for key, las in labels.items():
     vars()[key] = col2.number_input(las[0],value=default_values.get(key, [0])[0], step=step, format=None, key=key, help=las[1], on_change=None)
 
 if col2.button("Prédire le prix moyen", key="button_submit", help='Cliquez sur le bouton pour estimer le prix du logement.'):
-   # TODO faire la prédiction avec l'API
-   pred = do_prediction(revenu_median=vars()['MedInc'], 
-                    age_median=vars()['HouseAge'], 
-                    nb_room_mean=vars()['AveRooms'], 
-                    nb_bedroom_mean=vars()['AveBedrms'], 
-                    population=vars()['Population'], 
-                    occupation_mean=vars()['AveOccup'],
-                    latitude=vars()['Latitude'], 
-                    longitude=vars()['Longitude'])
-   col1.title(f'Le prix du logement est estimé à {round(pred,2)} (en 10K $ dollars)' )
+  
+    # logged_model = 'runs:/20b344164ae44839a301dc91fe3d4f63/Forest_Californie'
+    logged_model = 'runs:/69832757149e42018d43252293bc1511/Aurelie_Forest_Californie'
+
+    # Load model as a PyFuncModel.
+    loaded_model = mlflow.pyfunc.load_model(logged_model)
+
+    # "MedInc	HouseAge	AveRooms	AveBedrms	Population	AveOccup	Latitude	Longitude"
+    input_datas = {
+        "MedInc":[vars()["MedInc"]],
+        "HouseAge":[vars()["HouseAge"]],
+        "AveRooms":[vars()["AveRooms"]],
+        "AveBedrms":[vars()["AveBedrms"]],
+        "Population":[vars()["Population"]],
+        "AveOccup":[vars()["AveOccup"]],
+        "Latitude":[vars()["Latitude"]],
+        "Longitude":[vars()["Longitude"]]
+    }
+    df_to_predict = pd.DataFrame(input_datas)
+    pred = loaded_model.predict(pd.DataFrame(df_to_predict))[0]
+    col1.title(f'Le prix du logement est estimé à {round(pred,2)} (en 10K $ dollars)' )
 
 # DATE_COLUMN = 'date/time'
 # DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
