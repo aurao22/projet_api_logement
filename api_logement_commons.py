@@ -17,7 +17,9 @@ def do_prediction(revenu_median, age_median, nb_room_mean, nb_bedroom_mean, popu
     }
     df_to_predict = pd.DataFrame(input_datas)
 
-    model_path = _get_model_path()
+    model_path = get_model_path()
+    print(f"Model path : {model_path}")
+
     # Chargement du model
     model = load_model(model_path)
     predict_price = model.predict(df_to_predict)
@@ -32,15 +34,39 @@ def load_model(model_save_path):
         return load(model_save_path)
 
 
-def _get_model_path():
+def get_model_path():
     # Récupère le répertoire du programme
     file_path = getcwd() + "\\"
-    print(f"Current execution path : {file_path}")
+    print(f"get_model_path execution path : {file_path}")
     # C:\Users\User\WORK\workspace-ia\PROJETS\projet_api_logement\static\Forest_2022-05-05-10_29_03.joblib
     model_path = file_path
     if "PROJETS" not in model_path:
-        model_path = model_path + r'PROJETS\projet_api_logement'
+        model_path = model_path + r'PROJETS\projet_api_logement\\'
     elif "projet_api_logement" not in model_path:
-        model_path = model_path + r'projet_api_logement'
-    model_path = model_path + r'/Forest_2022-05-05-10_29_03.joblib'
+        model_path = model_path + r'projet_api_logement\\'
+    
+    model_path = model_path.replace(r"projet_api_logement_aurelie_mlflow", "")
+    model_path = model_path.replace(r"projet_api_logement_aurelie_FLASK", "")
+    model_path = model_path + r'Forest_2022-05-05-10_29_03.joblib'
+    print(f"Model path : {model_path}")
+    return model_path
+
+
+def get_img_path():
+    # Récupère le répertoire du programme
+    file_path = getcwd() + "\\"
+    print(f"get_img_path execution path : {file_path}")
+    model_path = file_path
+    if "PROJETS" not in model_path:
+        model_path = model_path + r'PROJETS\projet_api_logement\\'
+    elif "projet_api_logement" not in model_path:
+        model_path = model_path + r'projet_api_logement\\'
+    
+    model_path = model_path.replace(r"projet_api_logement_aurelie_mlflow", "")
+    model_path = model_path.replace(r"projet_api_logement_aurelie_FLASK", "")
+    
+    if "static" not in model_path:
+        model_path = model_path + r'static\\'
+    
+    print(f"IMG path : {model_path}")
     return model_path
