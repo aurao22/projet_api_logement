@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 *.joblib
 projet_api_logement_aurelie_FLASK.zip
+projet_api_logement_aurelie_mlflow/mlruns/*
