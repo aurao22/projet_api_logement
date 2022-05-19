@@ -23,7 +23,7 @@ if __name__ == "__main__":
         # Chargement du model
         model = load_model(model_path)
         
-        model_name = "california_logement_V0.2"
+        model_name = "mlfow_model"
         
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
         print(mlflow.get_tracking_uri())

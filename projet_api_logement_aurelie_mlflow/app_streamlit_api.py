@@ -3,8 +3,8 @@ import pandas as pd
 from PIL import Image
 import sys
 sys.path.append("C:\\Users\\User\\WORK\\workspace-ia\\PROJETS\\")
-from projet_api_logement.api_logement_commons import do_prediction, get_img_path
-import mlflow
+from projet_api_logement.api_logement_commons import get_img_path
+import requests
     # Predict on a Pandas DataFrame.
 import pandas as pd
 
@@ -54,54 +54,24 @@ for key, las in labels.items():
 
 if col2.button("Prédire le prix moyen", key="button_submit", help='Cliquez sur le bouton pour estimer le prix du logement.'):
   
-    # logged_model = 'runs:/20b344164ae44839a301dc91fe3d4f63/Forest_Californie'
-    logged_model = 'runs:/69832757149e42018d43252293bc1511/Aurelie_Forest_Californie'
+        # "MedInc	HouseAge	AveRooms	AveBedrms	Population	AveOccup	Latitude	Longitude"
+        input_datas = {
+            "MedInc":[vars()["MedInc"]],
+            "HouseAge":[vars()["HouseAge"]],
+            "AveRooms":[vars()["AveRooms"]],
+            "AveBedrms":[vars()["AveBedrms"]],
+            "Population":[vars()["Population"]],
+            "AveOccup":[vars()["AveOccup"]],
+            "Latitude":[vars()["Latitude"]],
+            "Longitude":[vars()["Longitude"]]
+        }
+        X_te = pd.DataFrame(input_datas)
+        
+        headers = {'Content-Type': 'application/json'}
+        url = 'http://127.0.0.1:5001/invocations'
+        data = X_te.to_json(orient='split')
+        response = requests.post(url,headers=headers, data=data)
+        responseJson = response.json()
+        pred = round(responseJson[0])
+        col1.title(f'Le prix du logement est estimé à {round(pred,2)} (10 k$ Dollars)' )
 
-    # Load model as a PyFuncModel.
-    loaded_model = mlflow.pyfunc.load_model(logged_model)
-
-    # "MedInc	HouseAge	AveRooms	AveBedrms	Population	AveOccup	Latitude	Longitude"
-    input_datas = {
-        "MedInc":[vars()["MedInc"]],
-        "HouseAge":[vars()["HouseAge"]],
-        "AveRooms":[vars()["AveRooms"]],
-        "AveBedrms":[vars()["AveBedrms"]],
-        "Population":[vars()["Population"]],
-        "AveOccup":[vars()["AveOccup"]],
-        "Latitude":[vars()["Latitude"]],
-        "Longitude":[vars()["Longitude"]]
-    }
-    df_to_predict = pd.DataFrame(input_datas)
-    pred = loaded_model.predict(pd.DataFrame(df_to_predict))[0]
-    col1.title(f'Le prix du logement est estimé à {round(pred,2)} (en 10K $ dollars)' )
-
-# DATE_COLUMN = 'date/time'
-# DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
-#             'streamlit-demo-data/uber-raw-data-sep14.csv.gz')
-
-# @st.cache
-# def load_data(nrows):
-#     data = pd.read_csv(DATA_URL, nrows=nrows)
-#     lowercase = lambda x: str(x).lower()
-#     data.rename(lowercase, axis='columns', inplace=True)
-#     data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
-#     return data
-
-# data_load_state = st.text('Loading data...')
-# data = load_data(10000)
-# data_load_state.text("Done! (using st.cache)")
-
-# if st.checkbox('Show raw data'):
-#     st.subheader('Raw data')
-#     st.write(data)
-
-# st.subheader('Number of pickups by hour')
-# hist_values = np.histogram(data[DATE_COLUMN].dt.hour, bins=24, range=(0,24))[0]
-# st.bar_chart(hist_values)
-
-# # Some number in the range 0-23
-# hour_to_filter = st.slider('hour', 0, 23, 17)
-# filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
-
-# st.subheader('Map of all pickups at %s:00' % hour_to_filter)
-# st.map(filtered_data)
